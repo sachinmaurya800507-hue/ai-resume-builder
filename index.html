@@ -1,27 +1,172 @@
+
 <!DOCTYPE html>
 <html>
-
 <head>
-<title>Resume Builder</title>
-<link rel="stylesheet" href="style.css">
+<title>Sachinwaala Tools</title>
+<style>
+body{font-family:Arial;background:#0a2a66;color:white;margin:0;}
+.header{border:6px solid red;background:#0040ff;text-align:center;font-size:40px;padding:20px;}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:30px;width:80%;margin:auto;margin-top:40px;}
+.box{border:4px solid black;background:white;color:black;padding:40px;text-align:center;cursor:pointer;}
+.box img{width:70px;}
+.box:hover{background:#f2f2f2;}
+.tool{display:none;padding:30px;background:#f2f2f2;color:black;}
+input,textarea{width:80%;padding:10px;margin:8px;}
+.resume{border:2px solid black;padding:20px;margin-top:20px;background:white;color:black;}
+.sidebar{position:fixed;right:0;top:120px;background:#eee;color:black;padding:15px;}
+button{padding:10px 20px;margin:10px;}
+</style>
 </head>
+<body>
 
-<body style="text-align:center;font-family:Arial">
+<!-- Header -->
+<div class="header">Welcome to Sachinwaala</div>
 
-<h1>Resume Builder</h1>
+<!-- 4 Boxes -->
+<div class="grid">
+  <div class="box" onclick="showTool('photo')">
+    <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png">
+    <h3>Photo Tool</h3><p>Resize & Quality Control</p>
+  </div>
 
-<input placeholder="Enter your name"><br><br>
+  <div class="box">
+    <a href="https://www.sarkariresult.com" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+      <h3>Sarkari Result</h3><p>Government Job Updates</p>
+    </a>
+  </div>
 
-<input placeholder="Enter phone"><br><br>
+  <div class="box" onclick="showTool('resume')">
+    <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png">
+    <h3>Create Resume</h3><p>Professional Resume Builder</p>
+  </div>
 
-<input placeholder="Enter email"><br><br>
+  <div class="box" onclick="showTool('about')">
+    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828817.png">
+    <h3>About Website</h3><p>Learn Website Features</p>
+  </div>
+</div>
 
-<textarea placeholder="Enter education"></textarea><br><br>
+<!-- PHOTO TOOL -->
+<div id="photo" class="tool">
+<h2>Photo Resize Tool</h2>
+<input type="file" id="photoUpload"><br>
+<label>Size:</label>
+<input type="range" min="100" max="400" value="200" id="size"><br>
+<img id="preview" style="width:200px">
+</div>
 
-<textarea placeholder="Enter skills"></textarea><br><br>
+<!-- RESUME BUILDER -->
+<div id="resume" class="tool">
+<h2>Professional Resume Builder</h2>
+<input id="name" placeholder="Full Name"><br>
+<input id="phone" placeholder="Phone"><br>
+<input id="email" placeholder="Email"><br>
+<input type="file" id="resumePhoto"><br>
+<textarea id="objective" placeholder="Career Objective"></textarea>
+<textarea id="education" placeholder="Education"></textarea>
+<textarea id="skills" placeholder="Skills"></textarea>
+<textarea id="experience" placeholder="Experience"></textarea>
+<textarea id="certification" placeholder="Certifications"></textarea>
+<input id="language" placeholder="Languages"><br>
+<input id="hobbies" placeholder="Hobbies"><br>
+<!-- QR Code Placeholder -->
+<button onclick="generateResume()">Generate Resume</button>
+<button onclick="downloadPDF()">Download PDF</button>
+<div class="resume" id="output"></div>
+<div id="qrcode"></div>
+</div>
 
-<button>Create Resume</button>
+<!-- ABOUT -->
+<div id="about" class="tool">
+<h2>About Sachinwaala Website</h2>
+<p>Welcome to <b>Sachinwaala</b>. This website helps students and job seekers create professional resumes, manage photos, and access government job info quickly.</p>
+<h3>Website Capabilities</h3>
+<ul>
+<li>Professional Resume Builder</li>
+<li>Photo Resize Tool</li>
+<li>QR Code Resume</li>
+<li>PDF Resume Download</li>
+<li>Sarkari Result Updates</li>
+<li>AI Based Resume Suggestions (Future)</li>
+<li>Mobile Friendly</li>
+</ul>
+</div>
+
+<!-- Sidebar Options -->
+<div class="sidebar">
+<h3>Resume Options</h3>
+<label><input type="checkbox" id="obj" checked> Objective</label><br>
+<label><input type="checkbox" id="edu" checked> Education</label><br>
+<label><input type="checkbox" id="skill" checked> Skills</label><br>
+<label><input type="checkbox" id="exp" checked> Experience</label><br>
+<label><input type="checkbox" id="cert" checked> Certifications</label><br>
+<label><input type="checkbox" id="lang" checked> Languages</label><br>
+<label><input type="checkbox" id="hob" checked> Hobbies</label>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+function showTool(id){
+  document.querySelectorAll(".tool").forEach(t=>t.style.display="none")
+  document.getElementById(id).style.display="block"
+}
+
+photoUpload.onchange=function(){
+  preview.src=URL.createObjectURL(this.files[0])
+}
+size.oninput=function(){preview.style.width=this.value+"px"}
+
+function generateResume(){
+let html="";
+html+="<div style='display:flex;align-items:center;gap:20px'>";
+if(resumePhoto.files[0]){
+html+="<img src='"+URL.createObjectURL(resumePhoto.files[0])+"' style='width:120px;height:120px;border-radius:8px'>";
+}
+html+="<div>";
+html+="<h2>"+name.value+"</h2>";
+html+="<p>"+phone.value+"</p>";
+html+="<p>"+email.value+"</p>";
+html+="</div></div>";
+
+if(obj.checked) html+="<h3>Career Objective</h3>"+objective.value;
+if(edu.checked) html+="<h3>Education</h3>"+education.value;
+if(skill.checked) html+="<h3>Skills</h3>"+skills.value;
+if(exp.checked) html+="<h3>Experience</h3>"+experience.value;
+if(cert.checked) html+="<h3>Certifications</h3>"+certification.value;
+if(lang.checked) html+="<h3>Languages</h3>"+language.value;
+if(hob.checked) html+="<h3>Hobbies</h3>"+hobbies.value;
+
+// QR Code generate
+document.getElementById("qrcode").innerHTML="";
+new QRCode(document.getElementById("qrcode"),{
+    text: name.value+" - "+email.value,
+    width:100,
+    height:100
+});
+
+document.getElementById("output").innerHTML=html;
+}
+
+// PDF Download placeholder
+function downloadPDF(){
+  alert("PDF Download will work in future with jsPDF or html2pdf library");
+}
+
+/* 🔹 AI Resume Notes 🔹
+  - AI resume feature requires AIzaSyBGFbhTj_NikN8cS1vBx-pvrmiqzn7asBg from OpenAI.
+  - Placeholder: future you can call GPT API here:
+    fetch('https://api.openai.com/v1/chat/completions', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer YOUR_API_KEY_HERE' // <-- Enter your API key here
+      },
+      body: JSON.stringify({...})
+    })
+*/
+</script>
 
 </body>
-
 </html>
